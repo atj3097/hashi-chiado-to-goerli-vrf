@@ -1,13 +1,14 @@
 # Crosschain Request of a Chainlink VRF with Gnosis's Hashi 🌉
 ![img](./img.png)
-This project demonstrates how to use the Yaho and Yaru contracts, part of the Gnosis's Hashi protocol, to send a crosschain message to a Chainlink VRF contract and listen for the response event.
+This project demonstrates how to use the [Yaho](https://github.com/gnosis/hashi/blob/main/packages/evm/contracts/Yaho.sol) and [Yaru](https://github.com/gnosis/hashi/blob/main/packages/evm/contracts/Yaru.sol) contracts, part of the Gnosis's Hashi protocol, to send a crosschain message to a Chainlink VRF contract and listen for the response event.
 
-# Hashi Protocol 🌉
+### First off, what is the Hashi Protocol 🌉? 
 
 Hashi is an EVM Header Oracle Aggregator, designed to facilitate a principled approach to cross-chain bridge security. It allows users to build custom oracle adapter contracts for any hash oracle mechanism they would like to use. Yaho and Yaru are contracts within the Hashi protocol that facilitate crosschain communication.
 
 - Yaho allows users to dispatch arbitrary messages, store the arbitrary message in storage, and relay previously stored messages to any number of message adapters.
 - Yaru allows the execution of arbitrary messages passed from Yaho.
+- You can see a more in depth explanation of Hashi on my mirror article here 🪞
 
 ## Step-by-Step Process 🚶‍♂️
 
