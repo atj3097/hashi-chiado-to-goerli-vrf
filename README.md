@@ -8,7 +8,7 @@ Hashi is an EVM Header Oracle Aggregator, designed to facilitate a principled ap
 
 - Yaho allows users to dispatch arbitrary messages, store the arbitrary message in storage, and relay previously stored messages to any number of message adapters.
 - Yaru allows the execution of arbitrary messages passed from Yaho.
-- You can see a more in depth explanation of Hashi on my mirror article here 🪞
+- [You can see a more in depth explanation of Hashi on my mirror article here](https://mirror.xyz/0x0e729b11661B3f1C1E829AAdF764D5C3295e1256/V2FdJn7LkBiTH55e51aTXb4PZa20oT1C_WJj8nIMFhw) 🪞
 
 ## Step-by-Step Process 🚶‍♂️
 
