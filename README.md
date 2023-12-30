@@ -1,5 +1,5 @@
 # Crosschain Request of a Chainlink VRF with Gnosis's Hashi 🌉
-
+![img](./img.png)
 This project demonstrates how to use the Yaho and Yaru contracts, part of the Gnosis's Hashi protocol, to send a crosschain message to a Chainlink VRF contract and listen for the response event.
 Hashi Protocol 🌉
 
