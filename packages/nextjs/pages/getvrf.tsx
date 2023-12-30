@@ -22,10 +22,7 @@ const goerliProvider = new ethers.JsonRpcProvider(
 const chiadoProvider = new ethers.JsonRpcProvider(
   "https://rpc.ankr.com/gnosis_testnet/1b9d82f3f0d792f0cf027af1dc0abfd2d1f4d45e8ef23e5997375a67f3b384dc",
 );
-const chiadoWallet = new ethers.Wallet(
-  "494082f501c5289288401d48770a7ff35372d974e8d6dc36fc47c83fc5533106",
-  chiadoProvider,
-);
+const chiadoWallet = new ethers.Wallet("replace with your own private key", chiadoProvider);
 
 const GetVRF = () => {
   const [vrf, setVrf] = useState("");
@@ -137,7 +134,7 @@ const GetVRF = () => {
       const vrfConsumerContract = new ethers.Contract(vrfConsumerAddress, vrfConsumerAbi.abi, goerliProvider);
       vrfConsumerContract.removeAllListeners();
     };
-  }, [goerliProvider]);
+  });
 
   return (
     <>
