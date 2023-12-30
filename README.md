@@ -1,25 +1,99 @@
 # Crosschain Request of a Chainlink VRF with Gnosis's Hashi 🌉
 ![img](./img.png)
 This project demonstrates how to use the Yaho and Yaru contracts, part of the Gnosis's Hashi protocol, to send a crosschain message to a Chainlink VRF contract and listen for the response event.
-Hashi Protocol 🌉
+
+# Hashi Protocol 🌉
 
 Hashi is an EVM Header Oracle Aggregator, designed to facilitate a principled approach to cross-chain bridge security. It allows users to build custom oracle adapter contracts for any hash oracle mechanism they would like to use. Yaho and Yaru are contracts within the Hashi protocol that facilitate crosschain communication.
 
 - Yaho allows users to dispatch arbitrary messages, store the arbitrary message in storage, and relay previously stored messages to any number of message adapters.
 - Yaru allows the execution of arbitrary messages passed from Yaho.
 
-### Steps 🚶‍♂️
+## Step-by-Step Process 🚶‍♂️
 
-1. Instantiate the Contracts: Instantiate the Yaho, Yaru, and Chainlink VRF contracts using their respective ABIs and addresses.
+### Step 1: Dispatch the Message
 
-2. Prepare the VRF Request Message: Prepare a message to request a VRF. The message includes the chain ID of the destination chain (Goerli), the address of the VRF contract, and the encoded function data for the requestRandomWords function of the VRF contract.
+```jsx
+// Initialize Yaho contract with the signer that can interact with it
+const yahoContract = new ethers.Contract(yahoAddress, yahoAbi.abi, chiadoWallet);
 
-3. Dispatch the Message: Dispatch the message through the Yaho contract on the Chiado chain. The dispatchMessagesToAdapters function takes an array of messages, an array of adapter addresses, and an array of destination adapter addresses.
+// Define the message structure
+const message = {
+  toChainId: ethers.utils.hexValue(5), // Chain ID for Goerli
+  to: vrfConsumerAddress, // Address of the VRF consumer contract on Goerli
+  data: vrfConsumerContract.interface.encodeFunctionData("requestRandomWords"), // Encoded function call
+};
 
-4. Execute the Message: After the dispatch transaction is confirmed, extract the message ID from the event logs of the dispatch receipt. Then execute the message on the Goerli chain using the Yaru contract.
+// Dispatch the message to the AMB on the Goerli network
+const dispatchTx = await yahoContract.dispatchMessagesToAdapters(
+  [message],
+  [chiadoAmbAdapterAddress],
+  [goerliAmbAddress],
+);
+await dispatchTx.wait();
+```
+In this step, we're sending our message to the Yaho contract to be relayed to Goerli. The dispatchMessagesToAdapters function is called with the message and the addresses of the AMB adapter contracts.
 
-5. Listen for the VRF Response: After executing the message, start listening for the VRF response event on the Goerli chain.
+### Step 2: Get the Signature
+
+```jsx
+// Encode the data for the AMB Helper contract
+const encodedData = new ethers.utils.AbiCoder().encode(
+  ["address", "bytes"],
+  [vrfConsumerAddress, message.data]
+);
+
+// Obtain the signature from the AMB Helper contract
+const signature = await ambHelperContract.getSignature(encodedData);
+```
+The encodedData is constructed with the address of the VRF consumer and the encoded function call data. The getSignature function of the AMB Helper contract is then called to retrieve the signature.
+
+### Step 3: Execute the Signature
+```jsx
+// Interact with the AMB contract on Goerli to execute the signature
+const ambContractOnGoerli = new ethers.Contract(goerliAmbAddress, ambAbi, goerliProvider);
+const executeSignatureTx = await ambContractOnGoerli.executeSignature(encodedData, signature);
+const executeSignatureReceipt = await executeSignatureTx.wait();
+```
+Here, we send the encodedData and signature to the AMB contract on Goerli using the executeSignature function. This triggers the AMB to process our message.
+
+### Step 4: Extract Message ID
+```jsx
+// Extract the messageId from the transaction receipt
+const messageId = executeSignatureReceipt.events.find(event => event.event === "MessageDispatched").args.messageId;
+```
+Once the executeSignature transaction is confirmed, we extract the messageId from the emitted MessageDispatched event.
+
+### Step 5: Execute the Message
+
+```jsx
+// Execute the message on Goerli through the Yaru contract
+const executeTx = await yaruContract.executeMessages(
+  [message],
+  [messageId],
+  [chiadoWallet.address],
+  [goerliAmbAddress],
+);
+await executeTx.wait();
+```
+The executeMessages function of the Yaru contract on Goerli is called with the message, messageId, and the address of our wallet.
+
+### Step 6: Listen for the VRF Response
+```jsx
+// Listen for the VRF response
+listenForVRFResponse(messageId);
+```
+Finally, we invoke a listener function that waits for the VRF response to be emitted by the Chainlink VRF contract.
 
 ### Use Cases 🎯
 
 Being able to request VRF crosschain opens up a lot of possibilities for decentralized applications. For example, a dApp on one chain could use a random number generated by a Chainlink VRF on another chain. This could be useful for dApps that need secure, verifiable randomness but are running on a chain where Chainlink VRF is not available or too expensive to use.
+
+# Running Locally
+
+Add your private key to the .env file and run the following commands:
+```yarn install```
+```yarn dev```
+
+To see where the real action is happening skip directly to the `packages/nextjs/pages/getvrf.tsx` directory.
+
