@@ -1,6 +1,6 @@
 # Crosschain Request of a Chainlink VRF with Gnosis's Hashi 🌉
 ![img](./img.png)
-This project demonstrates how to use the [Yaho](https://github.com/gnosis/hashi/blob/main/packages/evm/contracts/Yaho.sol) and [Yaru](https://github.com/gnosis/hashi/blob/main/packages/evm/contracts/Yaru.sol) contracts, part of the Gnosis's Hashi protocol, to send a crosschain message to a Chainlink VRF contract and listen for the response event.
+This project demonstrates how to use the [Yaho](https://github.com/gnosis/hashi/blob/main/packages/evm/contracts/Yaho.sol) and [Yaru](https://github.com/gnosis/hashi/blob/main/packages/evm/contracts/Yaru.sol) contracts, part of the Gnosis's Hashi protocol, to send a crosschain message(from Chiado to Goerli) to a Chainlink VRF contract(deployed on Goerli) and listen for the response event.
 
 ### First off, what is the Hashi Protocol 🌉? 
 
